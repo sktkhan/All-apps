@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Surveyor Pro — CAD Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-icon"><i class="fas fa-drafting-compass"></i></div>
+        <div class="header-text">
+            <h1>Surveyor Pro</h1>
+            <span class="version-badge">V3.0 CAD Edition</span>
+        </div>
+    </header>
+
+    <!-- Ad Slot -->
+    <div class="ad-slot">
+        <script type="text/javascript">
+            atOptions = { 'key' : 'fa085f009e658d4fed5c43ee4051065b', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };
+        </script>
+        <script type="text/javascript" src="https://www.highperformanceformat.com/fa085f009e658d4fed5c43ee4051065b/invoke.js"></script>
+    </div>
+
+    <!-- Main Tool: Area from Coordinates -->
+    <main class="tool-card">
+
+        <!-- Tool Title -->
+        <div class="tool-title">
+            <i class="fas fa-chart-area"></i>
+            <span>Area from Coordinates</span>
+        </div>
+
+        <!-- Stats Panel -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-label"><i class="fas fa-draw-polygon"></i> Area</div>
+                <div class="stat-value"><span id="valArea">—</span></div>
+                <div class="stat-unit">m²</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-label"><i class="fas fa-ruler"></i> Perimeter</div>
+                <div class="stat-value"><span id="valPeri">—</span></div>
+                <div class="stat-unit">m</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-label"><i class="fas fa-map-pin"></i> Points</div>
+                <div class="stat-value"><span id="valPts">—</span></div>
+                <div class="stat-unit">vertices</div>
+            </div>
+        </div>
+
+        <!-- Input -->
+        <div class="input-section">
+            <label class="input-label">
+                <i class="fas fa-keyboard"></i>
+                Enter Coordinates <span class="input-hint">(Easting, Northing — one per line)</span>
+            </label>
+            <textarea id="areaInput"
+                placeholder="500.000, 1000.000&#10;600.000, 1000.000&#10;600.000, 1100.000&#10;500.000, 1100.000"
+                oninput="calcArea()" spellcheck="false"></textarea>
+        </div>
+
+        <!-- Canvas Drawing -->
+        <div class="canvas-section">
+            <div class="canvas-toolbar">
+                <span class="canvas-title"><i class="fas fa-vector-square"></i> Plot View</span>
+                <button class="icon-btn" onclick="downloadCanvas()" title="Download Drawing">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas id="areaCanvas"></canvas>
+                <div class="canvas-empty" id="canvasEmpty">
+                    <i class="fas fa-drafting-compass"></i>
+                    <p>Enter coordinates above to generate drawing</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-row">
+            <button class="btn btn-primary" onclick="calcArea()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn btn-share" onclick="shareResult()">
+                <i class="fas fa-share-nodes"></i> Share
+            </button>
+            <button class="btn btn-secondary" onclick="clearAll()">
+                <i class="fas fa-trash-alt"></i> Clear
+            </button>
+        </div>
+
+        <!-- Result Box -->
+        <div id="res13" class="result-box"></div>
+
+    </main>
+
+    <!-- Help -->
+    <div class="help-panel" id="helpPanel">
+        <div class="help-content">
+            <button class="help-close" onclick="toggleHelp()"><i class="fas fa-times"></i></button>
+            <h3><i class="fas fa-book-open"></i> User Manual</h3>
+            <ol>
+                <li>Enter coordinates in <strong>Easting, Northing</strong> format, one point per line.</li>
+                <li>The drawing and calculations update automatically as you type.</li>
+                <li>Use <strong>Refresh</strong> to force a redraw.</li>
+                <li>Use <strong>Share</strong> to send the drawing image + results to WhatsApp, email, or any app.</li>
+                <li>Use the <strong>download icon</strong> to save the plot as a PNG image.</li>
+                <li>Use <strong>Clear</strong> to reset everything.</li>
+            </ol>
+            <p class="help-note"><i class="fas fa-info-circle"></i> Minimum 3 points required to draw a polygon.</p>
+        </div>
+    </div>
+    <div class="help-overlay" id="helpOverlay" onclick="toggleHelp()"></div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <button class="guide-btn" onclick="toggleHelp()">
+            <i class="fas fa-circle-question"></i> User Manual
+        </button>
+        <span class="footer-note">Surveyor Pro &copy; 2025</span>
+    </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
