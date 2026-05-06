@@ -1,6 +1,7 @@
 {
   "name": "Sewerage Pro Akhtar",
   "short_name": "SeweragePro",
+  "description": "Professional Sewerage & Pipe Slope Calculator for Surveyors and Civil Engineers. Calculate RL and Fall with high accuracy.",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#1a2634",
