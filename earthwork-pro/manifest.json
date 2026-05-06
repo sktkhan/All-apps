@@ -1,0 +1,14 @@
+{
+  "name": "Earthwork & Asphalt Pro: Surveyor Tools",
+  "short_name": "EarthworkPro",
+  "description": "Professional volume and asphalt tonnage calculator for civil engineering surveyors. Optimized for KSA construction standards and road work.",
+  "categories": ["productivity", "utilities", "education"],
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2ecc71",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
