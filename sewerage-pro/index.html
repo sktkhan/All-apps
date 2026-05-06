@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sewerage Pro - Akhtar Surveyor</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root { --primary: #3498db; --success: #27ae60; --dark: #1a2634; --card: #2c3e50; --text: #ecf0f1; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark); color: var(--text); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .app-card { background: var(--card); width: 100%; max-width: 480px; padding: 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); box-sizing: border-box; border: 1px solid #34495e; }
+        h1 { color: var(--primary); font-size: 22px; margin: 0 0 20px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; margin-bottom: 6px; font-size: 14px; color: #bdc3c7; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #34495e; background: #1a2634; color: #2ecc71; font-size: 16px; font-weight: bold; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--primary); }
+        button { width: 100%; padding: 16px; background: var(--success); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:active { transform: scale(0.98); }
+        .result-area { margin-top: 20px; padding: 15px; background: #000; border-radius: 10px; border-left: 5px solid var(--success); display: none; text-align: left; }
+        .result-item { margin: 5px 0; font-size: 16px; display: flex; justify-content: space-between; }
+        .ad-slot { margin: 15px 0; width: 100%; min-height: 50px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Adsterra -->
+    <div class="ad-slot">
+        <script async="async" data-cfasync="false" src="https://pl29290297.profitablecpmratenetwork.com/b706819116652b2e7fd7e161cbe6f7be/invoke.js"></script>
+        <div id="container-b706819116652b2e7fd7e161cbe6f7be"></div>
+    </div>
+
+    <div class="app-card">
+        <h1>Sewerage Slope Pro</h1>
+        
+        <div class="input-group">
+            <label>Start Level (Invert RL)</label>
+            <input type="number" id="startRL" step="0.001" placeholder="0.000">
+        </div>
+        <div class="input-group">
+            <label>Horizontal Distance (m)</label>
+            <input type="number" id="distance" step="0.01" placeholder="0.00">
+        </div>
+        <div class="input-group">
+            <label>Design Slope (%)</label>
+            <input type="number" id="slope" step="0.01" placeholder="e.g., 0.50">
+        </div>
+
+        <button onclick="calculateSewer()">Calculate End Level</button>
+
+        <div id="resultBox" class="result-area">
+            <div class="result-item"><span>Total Fall:</span> <strong id="fallVal">0.000</strong></div>
+            <hr style="border: 0.5px solid #333;">
+            <div class="result-item"><span>End Level (RL):</span> <strong id="endRLVal" style="color:#3498db;">0.000</strong></div>
+        </div>
+
+        <!-- Mid Rectangle Ad -->
+        <div class="ad-slot" style="margin-top:20px;">
+            <script>atOptions = {'key':'fa085f009e658d4fed5c43ee4051065b','format':'iframe','height':250,'width':300,'params':{}};</script>
+            <script src="https://www.highperformanceformat.com/fa085f009e658d4fed5c43ee4051065b/invoke.js"></script>
+        </div>
+    </div>
+
+    <!-- Footer Leaderboard -->
+    <div class="ad-slot">
+        <script>atOptions = {'key':'b639695771c7939b8fffd4a6dff9998d','format':'iframe','height':90,'width':728,'params':{}};</script>
+        <script src="https://www.highperformanceformat.com/b639695771c7939b8fffd4a6dff9998d/invoke.js"></script>
+    </div>
+
+    <script>
+        function calculateSewer() {
+            const sRL = parseFloat(document.getElementById('startRL').value);
+            const dist = parseFloat(document.getElementById('distance').value);
+            const slp = parseFloat(document.getElementById('slope').value);
+
+            if (!isNaN(sRL) && !isNaN(dist) && !isNaN(slp)) {
+                // Formula: Fall = (Distance * Slope) / 100
+                const fall = (dist * slp) / 100;
+                const endRL = sRL - fall;
+
+                document.getElementById('fallVal').innerText = fall.toFixed(3) + " m";
+                document.getElementById('endRLVal').innerText = endRL.toFixed(3) + " m";
+                document.getElementById('resultBox').style.display = 'block';
+            } else {
+                alert("Please enter valid numbers in all fields.");
+            }
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
