@@ -1,0 +1,11 @@
+{
+  "name": "Road Slope Pro",
+  "short_name": "RoadSlope",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1a2634",
+  "theme_color": "#e67e22",
+  "icons": [
+    { "src": "https://via.placeholder.com/192", "sizes": "192x192", "type": "image/png" }
+  ]
+}
