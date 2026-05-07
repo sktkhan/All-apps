@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Area by Coordinate Calculator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#040b12;--panel:#080f1a;--card:#0c1623;--border:#1a2d45;
+  --accent:#00d4ff;--accent2:#00ff88;--accent3:#ff6b35;--accent4:#a78bfa;
+  --text:#e8f4f8;--muted:#5a7a8a;
+  --mono:'Space Mono',monospace;--sans:'Sora',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+
+.ad-zone{width:100%;display:flex;justify-content:center;align-items:center;padding:10px 0;position:relative;z-index:10;}
+.ad-zone.mid{padding:14px 0;}
+
+.container{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:24px 16px 60px;}
+
+header{text-align:center;margin-bottom:36px;padding:36px 20px;position:relative;}
+header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
+.badge{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--accent);border:1px solid var(--accent);padding:4px 14px;border-radius:2px;margin-bottom:18px;text-transform:uppercase;animation:pulse-border 2s infinite;}
+@keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0.2);}50%{box-shadow:0 0 0 6px rgba(0,212,255,0);}}
+h1{font-size:clamp(26px,5vw,50px);font-weight:800;letter-spacing:-1px;line-height:1.1;background:linear-gradient(135deg,#fff 30%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;}
+.subtitle{color:var(--muted);font-size:13px;font-family:var(--mono);letter-spacing:1px;}
+
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+@media(max-width:768px){.main-grid{grid-template-columns:1fr;}}
+
+.panel{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative;}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
+.panel.green::before{background:linear-gradient(90deg,transparent,var(--accent2),transparent);}
+.panel.purple::before{background:linear-gradient(90deg,transparent,var(--accent4),transparent);}
+.panel.orange::before{background:linear-gradient(90deg,transparent,var(--accent3),transparent);}
+
+.panel-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.panel-header h3{font-size:12px;font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--accent);}
+.panel.green .panel-header h3{color:var(--accent2);}
+.panel.purple .panel-header h3{color:var(--accent4);}
+.panel.orange .panel-header h3{color:var(--accent3);}
+
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:blink 1.5s infinite;}
+.dot.green{background:var(--accent2);box-shadow:0 0 8px var(--accent2);}
+.dot.purple{background:var(--accent4);box-shadow:0 0 8px var(--accent4);}
+.dot.orange{background:var(--accent3);box-shadow:0 0 8px var(--accent3);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.panel-body{padding:20px;}
+.panel-scroll{max-height:520px;overflow-y:auto;padding:20px;}
+.panel-scroll::-webkit-scrollbar{width:3px;}
+.panel-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+.input-label{font-size:10px;font-family:var(--mono);letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;display:block;}
+.coord-input{width:100%;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px;color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.9;resize:vertical;min-height:200px;outline:none;transition:border-color 0.2s;}
+.coord-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,0.08);}
+.coord-input::placeholder{color:var(--muted);}
+.hint{margin-top:7px;font-size:10px;color:var(--muted);font-family:var(--mono);}
+
+.unit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:14px;}
+.unit-btn{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:8px 4px;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;text-align:center;}
+.unit-btn:hover{border-color:var(--accent);color:var(--accent);}
+.unit-btn.active{background:rgba(0,212,255,0.1);border-color:var(--accent);color:var(--accent);}
+
+.calc-btn{width:100%;margin-top:14px;padding:13px;background:linear-gradient(135deg,var(--accent),#0099bb);border:none;border-radius:8px;color:#000;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.calc-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,212,255,0.3);}
+.clear-btn{width:100%;margin-top:7px;padding:9px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.clear-btn:hover{border-color:var(--accent3);color:var(--accent3);}
+
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.result-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:13px;position:relative;overflow:hidden;}
+.result-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent2);}
+.result-card.hi::before{background:var(--accent);}
+.result-label{font-size:9px;font-family:var(--mono);letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:5px;}
+.result-value{font-size:18px;font-family:var(--mono);font-weight:700;color:var(--accent2);}
+.result-card.hi .result-value{color:var(--accent);}
+.result-unit{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
+
+.conv-table{background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px;}
+.unit-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:12px;}
+.unit-row:last-child{border-bottom:none;}
+.unit-row:hover{background:rgba(0,212,255,0.04);}
+.unit-name{color:var(--muted);}
+.unit-val{color:var(--text);font-weight:700;}
+
+.sec-head{font-size:10px;font-family:var(--mono);letter-spacing:2px;color:var(--accent);text-transform:uppercase;padding:9px 14px;border-bottom:1px solid var(--border);background:rgba(0,212,255,0.03);}
+.sec-head.green{color:var(--accent2);background:rgba(0,255,136,0.03);}
+
+.data-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;font-family:var(--mono);font-size:11px;border-bottom:1px solid rgba(26,45,69,0.4);}
+.data-row:last-child{border-bottom:none;}
+.data-row:hover{background:rgba(0,212,255,0.04);}
+.dr-label{color:var(--muted);}
+.dr-val{color:var(--text);}
+.dr-val.accent{color:var(--accent);}
+.dr-val.green{color:var(--accent2);}
+.dr-val.sum{color:var(--text);font-weight:700;}
+
+.pt-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px;}
+.pt-table th{padding:8px 10px;text-align:left;color:var(--accent);font-size:10px;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border);}
+.pt-table td{padding:7px 10px;border-bottom:1px solid rgba(26,45,69,0.4);color:var(--text);}
+.pt-table tr:last-child td{border-bottom:none;}
+.pt-table tbody tr:hover{background:rgba(0,212,255,0.04);}
+.pt-num{color:var(--accent);font-weight:700;}
+
+.canvas-wrap{background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden;aspect-ratio:1;}
+canvas{display:block;width:100%;height:100%;}
+
+.action-row{display:flex;gap:8px;flex-wrap:wrap;}
+.action-btn{flex:1;min-width:80px;padding:11px 8px;border-radius:6px;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border:1px solid var(--border);background:transparent;color:var(--muted);}
+.action-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.06);}
+.action-btn.pdf{border-color:var(--accent3);color:var(--accent3);}
+.action-btn.pdf:hover{background:rgba(255,107,53,0.1);}
+.action-btn.wa{border-color:var(--accent2);color:var(--accent2);}
+.action-btn.wa:hover{background:rgba(0,255,136,0.08);}
+
+.error-box{background:rgba(255,107,53,0.1);border:1px solid var(--accent3);border-radius:8px;padding:11px 14px;font-family:var(--mono);font-size:11px;color:var(--accent3);margin-top:10px;display:none;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1px;}
+.empty-icon{font-size:30px;margin-bottom:10px;opacity:0.3;}
+
+.abadge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:9px;font-family:var(--mono);font-weight:700;}
+.abadge.convex{background:rgba(0,255,136,0.12);color:var(--accent2);}
+.abadge.reflex{background:rgba(255,107,53,0.12);color:var(--accent3);}
+</style>
+</head>
+<body>
+
+<!-- TOP LEADERBOARD AD 728x90 -->
+<div class="ad-zone">
+  <script>
+    atOptions = {
+      'key' : 'b639695771c7939b8fffd4a6dff9998d',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+  </script>
+  <script src="https://www.highperformanceformat.com/b639695771c7939b8fffd4a6dff9998d/invoke.js"></script>
+</div>
+
+<div class="container">
+
+  <header>
+    <div class="badge">Surveying Tool · 13 — Area Calculator</div>
+    <h1>Area by Coordinate</h1>
+    <p class="subtitle">Shoelace Formula · Area · Perimeter · Side Lengths · Interior Angles · PDF Report</p>
+  </header>
+
+  <!-- MID AD 300x250 -->
+  <div class="ad-zone mid">
+    <script async="async" data-cfasync="false" src="https://pl29290297.profitablecpmratenetwork.com/b706819116652b2e7fd7e161cbe6f7be/invoke.js"></script>
+    <div id="container-b706819116652b2e7fd7e161cbe6f7be"></div>
+  </div>
+
+  <!-- ROW 1: INPUT + RESULTS -->
+  <div class="main-grid">
+
+    <div class="panel">
+      <div class="panel-header"><div class="dot"></div><h3>Coordinate Input</h3></div>
+      <div class="panel-body">
+        <label class="input-label">Enter Points (E , N) — One per line</label>
+        <textarea class="coord-input" id="coordInput" placeholder="100,200&#10;250,200&#10;250,350&#10;100,350&#10;&#10;Format: Easting, Northing&#10;Example: 1000.5, 2500.75"></textarea>
+        <p class="hint">// Minimum 3 points · First point auto-closes polygon</p>
+
+        <label class="input-label" style="margin-top:14px;">Primary Display Unit</label>
+        <div class="unit-grid">
+          <button class="unit-btn active" onclick="setUnit(this,'m2')">m²</button>
+          <button class="unit-btn" onclick="setUnit(this,'ft2')">ft²</button>
+          <button class="unit-btn" onclick="setUnit(this,'marla')">Marla</button>
+          <button class="unit-btn" onclick="setUnit(this,'kanal')">Kanal</button>
+          <button class="unit-btn" onclick="setUnit(this,'acre')">Acre</button>
+          <button class="unit-btn" onclick="setUnit(this,'ha')">Hectare</button>
+        </div>
+
+        <button class="calc-btn" onclick="calculate()">▶ Calculate Area</button>
+        <button class="clear-btn" onclick="clearAll()">✕ Clear All</button>
+        <div class="error-box" id="errorBox"></div>
+      </div>
+    </div>
+
+    <div class="panel green">
+      <div class="panel-header"><div class="dot green"></div><h3>Area Results</h3></div>
+      <div class="panel-scroll" id="resultsArea">
+        <div class="empty-state"><div class="empty-icon">◈</div>Enter coordinates<br>and press Calculate</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 2: POLYGON + POINTS TABLE -->
+  <div class="main-grid">
+
+    <div class="panel purple">
+      <div class="panel-header"><div class="dot purple"></div><h3>Polygon Preview</h3></div>
+      <div class="panel-body">
+        <div class="canvas-wrap"><canvas id="polyCanvas" width="500" height="500"></canvas></div>
+      </div>
+    </div>
+
+    <div class="panel orange">
+      <div class="panel-header"><div class="dot orange"></div><h3>Coordinate Points</h3></div>
+      <div class="panel-scroll" id="pointsArea">
+        <div class="empty-state"><div class="empty-icon">⊹</div>No points yet</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 3: SIDE LENGTHS + INTERIOR ANGLES -->
+  <div class="main-grid">
+
+    <div class="panel">
+      <div class="panel-header"><div class="dot"></div><h3>Side Lengths</h3></div>
+      <div class="panel-scroll" id="sidesArea">
+        <div class="empty-state"><div class="empty-icon">↔</div>Side lengths will appear here</div>
+      </div>
+    </div>
+
+    <div class="panel green">
+      <div class="panel-header"><div class="dot green"></div><h3>Interior Angles</h3></div>
+      <div class="panel-scroll" id="anglesArea">
+        <div class="empty-state"><div class="empty-icon">∠</div>Interior angles will appear here</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ACTION PANEL -->
+  <div class="panel orange" id="actionPanel" style="display:none;margin-bottom:20px;">
+    <div class="panel-header"><div class="dot orange"></div><h3>Export & Share</h3></div>
+    <div class="panel-body">
+      <div class="action-row">
+        <button class="action-btn pdf" onclick="generatePDF()">⬇ PDF Report</button>
+        <button class="action-btn" onclick="copyResults()">⎘ Copy Results</button>
+        <button class="action-btn wa" onclick="shareWhatsApp()">✉ WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AD 300x250 between content and footer -->
+  <div class="ad-zone mid">
+    <script>
+      atOptions = {
+        'key' : 'fa085f009e658d4fed5c43ee4051065b',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highperformanceformat.com/fa085f009e658d4fed5c43ee4051065b/invoke.js"></script>
+  </div>
+
+</div>
+
+<!-- BOTTOM LEADERBOARD AD -->
+<div class="ad-zone">
+  <script>
+    atOptions = {
+      'key' : 'b639695771c7939b8fffd4a6dff9998d',
+      'format' : 'iframe',
+      'height' : 90,
+      'width' : 728,
+      'params' : {}
+    };
+  </script>
+  <script src="https://www.highperformanceformat.com/b639695771c7939b8fffd4a6dff9998d/invoke.js"></script>
+</div>
+
+<script>
+/* ─────── STATE ─────── */
+let activeUnit='m2', lastPoints=[], lastResults=null;
+
+const unitFactors={
+  m2:{factor:1,label:'Square Meters',sym:'m²'},
+  ft2:{factor:10.7639,label:'Square Feet',sym:'ft²'},
+  marla:{factor:1/25.2929,label:'Marla',sym:'Marla'},
+  kanal:{factor:1/505.857,label:'Kanal',sym:'Kanal'},
+  acre:{factor:1/4046.86,label:'Acre',sym:'Acre'},
+  ha:{factor:1/10000,label:'Hectare',sym:'ha'},
+};
+
+/* ─────── HELPERS ─────── */
+function setUnit(btn,unit){
+  document.querySelectorAll('.unit-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); activeUnit=unit;
+  if(lastPoints.length>=3) renderResults(lastResults);
+}
+function fmt(n,d=4){return Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+
+/* ─────── PARSE ─────── */
+function parseCoords(text){
+  const lines=text.trim().split('\n'),pts=[];
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i].trim();
+    if(!line||line.startsWith('//')) continue;
+    const parts=line.split(/[,\s]+/);
+    if(parts.length<2) throw new Error(`Line ${i+1}: Use E,N format`);
+    const e=parseFloat(parts[0]),n=parseFloat(parts[1]);
+    if(isNaN(e)||isNaN(n)) throw new Error(`Line ${i+1}: Non-numeric value`);
+    pts.push({e,n,id:pts.length+1});
+  }
+  return pts;
+}
+
+/* ─────── SHOELACE ─────── */
+function shoelace(pts){
+  let sum=0;const len=pts.length;
+  for(let i=0;i<len;i++){const j=(i+1)%len;sum+=pts[i].e*pts[j].n-pts[j].e*pts[i].n;}
+  return{area:Math.abs(sum)/2,signed:sum/2};
+}
+
+/* ─────── SIDES ─────── */
+function calcSides(pts){
+  return pts.map((p,i)=>{
+    const j=(i+1)%pts.length,q=pts[j];
+    const dE=q.e-p.e,dN=q.n-p.n;
+    const dist=Math.sqrt(dE*dE+dN*dN);
+    return{from:p.id,to:q.id,dist,dE,dN};
+  });
+}
+
+/* ─────── INTERIOR ANGLES ─────── */
+function calcAngles(pts,signed){
+  const ccw=signed>0,n=pts.length;
+  return pts.map((curr,i)=>{
+    const prev=pts[(i-1+n)%n],next=pts[(i+1)%n];
+    const v1e=prev.e-curr.e,v1n=prev.n-curr.n;
+    const v2e=next.e-curr.e,v2n=next.n-curr.n;
+    const dot=v1e*v2e+v1n*v2n;
+    const cross=v1e*v2n-v1n*v2e;
+    const raw=Math.atan2(Math.abs(cross),dot)*(180/Math.PI);
+    const interior=ccw?(cross>0?raw:360-raw):(cross<0?raw:360-raw);
+    return{id:curr.id,angle:interior,convex:interior<=180};
+  });
+}
+
+/* ─────── CALCULATE ─────── */
+function calculate(){
+  const errBox=document.getElementById('errorBox');
+  errBox.style.display='none';
+  let pts;
+  try{pts=parseCoords(document.getElementById('coordInput').value);}
+  catch(e){errBox.textContent='⚠ '+e.message;errBox.style.display='block';return;}
+  if(pts.length<3){errBox.textContent='⚠ Minimum 3 points required';errBox.style.display='block';return;}
+  lastPoints=pts;
+  const{area:areaM2,signed}=shoelace(pts);
+  const sides=calcSides(pts);
+  const angles=calcAngles(pts,signed);
+  const perim=sides.reduce((a,b)=>a+b.dist,0);
+  lastResults={pts,areaM2,sides,angles,perim};
+  renderResults(lastResults);
+  renderSides(sides);
+  renderAngles(angles);
+  renderPointsTable(pts);
+  drawPolygon(pts,areaM2);
+  document.getElementById('actionPanel').style.display='block';
+}
+
+/* ─────── RENDER RESULTS ─────── */
+function renderResults(r){
+  const{pts,areaM2,perim}=r;
+  const u=unitFactors[activeUnit];
+  const convs=[
+    {sym:'m²',val:fmt(areaM2)},
+    {sym:'ft²',val:fmt(areaM2*10.7639)},
+    {sym:'Marla',val:fmt(areaM2/25.2929)},
+    {sym:'Kanal',val:fmt(areaM2/505.857)},
+    {sym:'Acre',val:fmt(areaM2/4046.86)},
+    {sym:'ha',val:fmt(areaM2/10000)},
+  ];
+  document.getElementById('resultsArea').innerHTML=`
+    <div class="results-grid">
+      <div class="result-card hi">
+        <div class="result-label">Area (${u.sym})</div>
+        <div class="result-value">${fmt(areaM2*u.factor)}</div>
+        <div class="result-unit">${u.label}</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Perimeter</div>
+        <div class="result-value">${fmt(perim,3)}</div>
+        <div class="result-unit">meters</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Vertices</div>
+        <div class="result-value">${pts.length}</div>
+        <div class="result-unit">points</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">Area (m²)</div>
+        <div class="result-value">${fmt(areaM2)}</div>
+        <div class="result-unit">square meters</div>
+      </div>
+    </div>
+    <div class="sec-head">All Unit Conversions</div>
+    <div class="conv-table">
+      ${convs.map(c=>`<div class="unit-row"><span class="unit-name">${c.sym}</span><span class="unit-val">${c.val}</span></div>`).join('')}
+    </div>`;
+}
+
+/* ─────── RENDER SIDES ─────── */
+function renderSides(sides){
+  const total=sides.reduce((a,b)=>a+b.dist,0);
+  document.getElementById('sidesArea').innerHTML=`
+    <div class="sec-head">Line Segments P→P</div>
+    ${sides.map(s=>`
+      <div class="data-row">
+        <span class="dr-label">P${s.from} → P${s.to}</span>
+        <span class="dr-val accent">${fmt(s.dist,4)} m</span>
+      </div>`).join('')}
+    <div class="data-row" style="border-top:1px solid var(--border);padding-top:10px;">
+      <span class="dr-label" style="color:var(--text);font-weight:700;">Total Perimeter</span>
+      <span class="dr-val accent" style="font-weight:700;">${fmt(total,4)} m</span>
+    </div>`;
+}
+
+/* ─────── RENDER ANGLES ─────── */
+function renderAngles(angles){
+  const sum=angles.reduce((a,b)=>a+b.angle,0);
+  const exp=(angles.length-2)*180;
+  document.getElementById('anglesArea').innerHTML=`
+    <div class="sec-head green">Interior Angle at Each Vertex</div>
+    ${angles.map(a=>`
+      <div class="data-row">
+        <span class="dr-label">P${a.id} &nbsp;<span class="abadge ${a.convex?'convex':'reflex'}">${a.convex?'Convex':'Reflex'}</span></span>
+        <span class="dr-val green">${fmt(a.angle,4)}°</span>
+      </div>`).join('')}
+    <div class="data-row" style="border-top:1px solid var(--border);padding-top:10px;">
+      <span class="dr-val sum">Sum: ${fmt(sum,2)}°</span>
+      <span class="dr-label">(Expected: ${exp}°)</span>
+    </div>`;
+}
+
+/* ─────── RENDER POINTS TABLE ─────── */
+function renderPointsTable(pts){
+  document.getElementById('pointsArea').innerHTML=`
+    <table class="pt-table">
+      <thead><tr><th>PT</th><th>Easting (E)</th><th>Northing (N)</th></tr></thead>
+      <tbody>${pts.map(p=>`<tr><td class="pt-num">P${p.id}</td><td>${p.e.toFixed(4)}</td><td>${p.n.toFixed(4)}</td></tr>`).join('')}</tbody>
+    </table>`;
+}
+
+/* ─────── DRAW POLYGON ─────── */
+function drawPolygon(pts,areaM2){
+  const canvas=document.getElementById('polyCanvas');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#040b12';ctx.fillRect(0,0,W,H);
+  // Grid
+  ctx.strokeStyle='rgba(0,212,255,0.05)';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  // Scale
+  const pad=52;
+  const es=pts.map(p=>p.e),ns=pts.map(p=>p.n);
+  const minE=Math.min(...es),maxE=Math.max(...es);
+  const minN=Math.min(...ns),maxN=Math.max(...ns);
+  const rE=maxE-minE||1,rN=maxN-minN||1;
+  const scale=Math.min((W-pad*2)/rE,(H-pad*2)/rN);
+  const oX=(W-pad*2-rE*scale)/2,oY=(H-pad*2-rN*scale)/2;
+  const tx=e=>pad+oX+(e-minE)*scale;
+  const ty=n=>H-pad-oY-(n-minN)*scale;
+  // Fill
+  ctx.beginPath();ctx.moveTo(tx(pts[0].e),ty(pts[0].n));
+  for(let i=1;i<pts.length;i++) ctx.lineTo(tx(pts[i].e),ty(pts[i].n));
+  ctx.closePath();ctx.fillStyle='rgba(0,212,255,0.07)';ctx.fill();
+  // Stroke
+  ctx.beginPath();ctx.moveTo(tx(pts[0].e),ty(pts[0].n));
+  for(let i=1;i<pts.length;i++) ctx.lineTo(tx(pts[i].e),ty(pts[i].n));
+  ctx.closePath();ctx.strokeStyle='#00d4ff';ctx.lineWidth=1.8;ctx.stroke();
+  // Side length labels on lines
+  ctx.font='9px Space Mono,monospace';ctx.textAlign='center';
+  for(let i=0;i<pts.length;i++){
+    const j=(i+1)%pts.length;
+    const mx=(tx(pts[i].e)+tx(pts[j].e))/2,my=(ty(pts[i].n)+ty(pts[j].n))/2;
+    const d=Math.sqrt(Math.pow(pts[j].e-pts[i].e,2)+Math.pow(pts[j].n-pts[i].n,2));
+    ctx.fillStyle='rgba(0,212,255,0.75)';
+    ctx.fillText(d.toFixed(2)+'m',mx,my-6);
+  }
+  // Points & labels
+  pts.forEach(p=>{
+    const x=tx(p.e),y=ty(p.n);
+    ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle='#00d4ff';ctx.fill();
+    ctx.beginPath();ctx.arc(x,y,10,0,Math.PI*2);ctx.strokeStyle='rgba(0,212,255,0.2)';ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='bold 9px Space Mono,monospace';ctx.textAlign='center';
+    ctx.fillText('P'+p.id,x,y-16);
+  });
+  // Area in centroid
+  const cx=es.reduce((a,b)=>a+b,0)/pts.length,cy=ns.reduce((a,b)=>a+b,0)/pts.length;
+  ctx.fillStyle='rgba(0,255,136,0.85)';ctx.font='bold 11px Space Mono,monospace';ctx.textAlign='center';
+  ctx.fillText(fmt(areaM2,2)+' m²',tx(cx),ty(cy));
+}
+
+/* ─────── PDF REPORT ─────── */
+async function generatePDF(){
+  if(!lastResults) return;
+  const{pts,areaM2,sides,angles,perim}=lastResults;
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  const PW=210,pad=18;
+  let y=0;
+
+  const C={dark:[4,11,18],panel:[8,15,26],card:[12,22,35],border:[26,45,69],
+    accent:[0,212,255],green:[0,255,136],orange:[255,107,53],purple:[167,139,250],
+    text:[232,244,248],muted:[90,122,138],black:[0,0,0]};
+
+  // BG
+  doc.setFillColor(...C.dark);doc.rect(0,0,PW,297,'F');
+
+  // Header
+  doc.setFillColor(...C.panel);doc.rect(0,0,PW,38,'F');
+  doc.setDrawColor(...C.accent);doc.setLineWidth(0.5);doc.line(0,38,PW,38);
+  doc.setDrawColor(...C.accent);doc.setLineWidth(3);doc.line(0,0,0,38);
+  doc.setFont('helvetica','bold');doc.setFontSize(18);doc.setTextColor(...C.accent);
+  doc.text('AREA BY COORDINATE',pad,15);
+  doc.setFontSize(8);doc.setTextColor(...C.muted);
+  doc.text('Professional Survey Report — Shoelace Formula',pad,23);
+  doc.setFontSize(7);doc.setTextColor(...C.muted);
+  doc.text('Date: '+new Date().toLocaleString(),PW-pad,15,{align:'right'});
+  doc.text('Tool 13 | Akhtar Engineering Hub',PW-pad,23,{align:'right'});
+  y=46;
+
+  // Summary cards row
+  const cards=[
+    {label:'Area (m²)',val:fmt(areaM2),c:C.accent},
+    {label:'Area (Marla)',val:fmt(areaM2/25.2929),c:C.green},
+    {label:'Area (Kanal)',val:fmt(areaM2/505.857),c:C.purple},
+    {label:'Perimeter (m)',val:fmt(perim,3),c:C.orange},
+  ];
+  const cw=(PW-pad*2-9)/4;
+  cards.forEach((cd,i)=>{
+    const cx=pad+i*(cw+3);
+    doc.setFillColor(...C.card);doc.roundedRect(cx,y,cw,20,1.5,1.5,'F');
+    doc.setDrawColor(...C.border);doc.roundedRect(cx,y,cw,20,1.5,1.5,'S');
+    doc.setFillColor(...cd.c);doc.rect(cx,y,cw,1.5,'F');
+    doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(...C.muted);
+    doc.text(cd.label,cx+cw/2,y+8,{align:'center'});
+    doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...cd.c);
+    doc.text(cd.val,cx+cw/2,y+15,{align:'center'});
+  });
+  y+=26;
+
+  // All conversions + polygon image side by side
+  const imgW=72,imgH=72;
+  // Polygon
+  const imgData=document.getElementById('polyCanvas').toDataURL('image/png');
+  doc.setFillColor(...C.card);doc.roundedRect(pad,y,imgW,imgH,2,2,'F');
+  doc.setDrawColor(...C.border);doc.roundedRect(pad,y,imgW,imgH,2,2,'S');
+  doc.addImage(imgData,'PNG',pad+1,y+1,imgW-2,imgH-2);
+
+  // Conversions table
+  const tx2=pad+imgW+6;
+  doc.setFillColor(...C.card);doc.roundedRect(tx2,y,PW-pad-tx2,imgH,2,2,'F');
+  doc.setDrawColor(...C.border);doc.roundedRect(tx2,y,PW-pad-tx2,imgH,2,2,'S');
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...C.accent);
+  doc.text('ALL UNIT CONVERSIONS',tx2+4,y+8);
+  doc.setDrawColor(...C.border);doc.line(tx2+4,y+10,PW-pad-2,y+10);
+  const convRows=[
+    ['m²',fmt(areaM2)],['ft²',fmt(areaM2*10.7639)],
+    ['Marla',fmt(areaM2/25.2929)],['Kanal',fmt(areaM2/505.857)],
+    ['Acre',fmt(areaM2/4046.86)],['Hectare',fmt(areaM2/10000)],
+    ['Perimeter',fmt(perim,4)+' m'],
+  ];
+  convRows.forEach((r,i)=>{
+    const ry=y+16+i*8;
+    if(i%2===0){doc.setFillColor(...C.panel);doc.rect(tx2+2,ry-3.5,PW-pad-tx2-4,7,'F');}
+    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...C.muted);
+    doc.text(r[0],tx2+5,ry);
+    doc.setFont('helvetica','bold');doc.setTextColor(...C.text);
+    doc.text(r[1],PW-pad-3,ry,{align:'right'});
+  });
+  y+=imgH+8;
+
+  // POINTS TABLE
+  doc.setFillColor(...C.card);
+  const ptH=10+pts.length*7+4;
+  doc.roundedRect(pad,y,PW-pad*2,ptH,2,2,'F');
+  doc.setDrawColor(...C.border);doc.roundedRect(pad,y,PW-pad*2,ptH,2,2,'S');
+  doc.setFillColor(...C.accent);doc.rect(pad,y,PW-pad*2,1.5,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...C.accent);
+  doc.text('COORDINATE POINTS',pad+4,y+8);
+  const pH=y+12;
+  doc.setFontSize(6.5);doc.setTextColor(...C.accent);
+  doc.text('PT',pad+4,pH);doc.text('Easting (E)',pad+22,pH);doc.text('Northing (N)',pad+70,pH);doc.text('P→Next Dist(m)',pad+118,pH);
+  doc.setDrawColor(...C.border);doc.line(pad+2,pH+2,PW-pad-2,pH+2);
+  pts.forEach((p,i)=>{
+    const ry=pH+6+i*7;
+    if(i%2===0){doc.setFillColor(...C.panel);doc.rect(pad+2,ry-4,PW-pad*2-4,6.5,'F');}
+    doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...C.accent);
+    doc.text('P'+p.id,pad+4,ry);
+    doc.setFont('helvetica','normal');doc.setTextColor(...C.text);
+    doc.text(p.e.toFixed(4),pad+22,ry);
+    doc.text(p.n.toFixed(4),pad+70,ry);
+    doc.setTextColor(...C.green);
+    doc.text(fmt(sides[i].dist,4),pad+118,ry);
+  });
+  y+=ptH+8;
+
+  // SIDE LENGTHS + ANGLES on same row
+  if(y>220){doc.addPage();doc.setFillColor(...C.dark);doc.rect(0,0,PW,297,'F');y=20;}
+  const halfW=(PW-pad*2-6)/2;
+  const sH=10+sides.length*7+10;
+  const aH=10+angles.length*7+14;
+  const maxH=Math.max(sH,aH);
+
+  // Sides box
+  doc.setFillColor(...C.card);doc.roundedRect(pad,y,halfW,maxH,2,2,'F');
+  doc.setDrawColor(...C.border);doc.roundedRect(pad,y,halfW,maxH,2,2,'S');
+  doc.setFillColor(...C.accent);doc.rect(pad,y,halfW,1.5,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...C.accent);
+  doc.text('SIDE LENGTHS',pad+4,y+8);
+  doc.setDrawColor(...C.border);doc.line(pad+2,y+10,pad+halfW-2,y+10);
+  doc.setFontSize(6.5);doc.setTextColor(...C.accent);
+  doc.text('Segment',pad+4,y+15);doc.text('Length (m)',pad+halfW-4,y+15,{align:'right'});
+  doc.setDrawColor(...C.border);doc.line(pad+2,y+17,pad+halfW-2,y+17);
+  sides.forEach((s,i)=>{
+    const ry=y+22+i*7;
+    if(i%2===0){doc.setFillColor(...C.panel);doc.rect(pad+2,ry-4,halfW-4,6.5,'F');}
+    doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(...C.muted);
+    doc.text('P'+s.from+' → P'+s.to,pad+4,ry);
+    doc.setFont('helvetica','bold');doc.setTextColor(...C.text);
+    doc.text(fmt(s.dist,4),pad+halfW-4,ry,{align:'right'});
+  });
+  const stY=y+22+sides.length*7+2;
+  doc.setDrawColor(...C.border);doc.line(pad+2,stY,pad+halfW-2,stY);
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...C.text);
+  doc.text('Total Perimeter',pad+4,stY+6);
+  doc.setTextColor(...C.accent);doc.text(fmt(perim,4)+' m',pad+halfW-4,stY+6,{align:'right'});
+
+  // Angles box
+  const ax=pad+halfW+6;
+  doc.setFillColor(...C.card);doc.roundedRect(ax,y,halfW,maxH,2,2,'F');
+  doc.setDrawColor(...C.border);doc.roundedRect(ax,y,halfW,maxH,2,2,'S');
+  doc.setFillColor(...C.green);doc.rect(ax,y,halfW,1.5,'F');
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...C.green);
+  doc.text('INTERIOR ANGLES',ax+4,y+8);
+  doc.setDrawColor(...C.border);doc.line(ax+2,y+10,ax+halfW-2,y+10);
+  doc.setFontSize(6.5);doc.setTextColor(...C.green);
+  doc.text('Point',ax+4,y+15);doc.text('Angle',ax+28,y+15);doc.text('Type',ax+halfW-4,y+15,{align:'right'});
+  doc.setDrawColor(...C.border);doc.line(ax+2,y+17,ax+halfW-2,y+17);
+  angles.forEach((a,i)=>{
+    const ry=y+22+i*7;
+    if(i%2===0){doc.setFillColor(...C.panel);doc.rect(ax+2,ry-4,halfW-4,6.5,'F');}
+    doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...C.accent);
+    doc.text('P'+a.id,ax+4,ry);
+    doc.setFont('helvetica','normal');doc.setTextColor(...C.text);
+    doc.text(fmt(a.angle,4)+'°',ax+28,ry);
+    doc.setTextColor(a.convex?C.green[0]:C.orange[0],a.convex?C.green[1]:C.orange[1],a.convex?C.green[2]:C.orange[2]);
+    doc.text(a.convex?'Convex':'Reflex',ax+halfW-4,ry,{align:'right'});
+  });
+  const sumA=angles.reduce((s,a)=>s+a.angle,0);
+  const expA=(angles.length-2)*180;
+  const atY=y+22+angles.length*7+2;
+  doc.setDrawColor(...C.border);doc.line(ax+2,atY,ax+halfW-2,atY);
+  doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...C.text);
+  doc.text('Sum: '+fmt(sumA,2)+'°',ax+4,atY+6);
+  doc.setTextColor(...C.muted);doc.text('(Exp: '+expA+'°)',ax+halfW-4,atY+6,{align:'right'});
+
+  y+=maxH+8;
+
+  // Footer
+  doc.setFillColor(...C.panel);doc.rect(0,284,PW,13,'F');
+  doc.setDrawColor(...C.border);doc.line(0,284,PW,284);
+  doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(...C.muted);
+  doc.text('Area by Coordinate — Akhtar Engineering Hub',pad,291);
+  doc.text('Results via Shoelace Formula. Always verify independently.',PW-pad,291,{align:'right'});
+
+  doc.save('Area-Coordinate-Report.pdf');
+}
+
+/* ─────── COPY ─────── */
+function copyResults(){
+  if(!lastResults) return;
+  const{pts,areaM2,sides,angles,perim}=lastResults;
+  let t='=== AREA BY COORDINATE ===\n\n';
+  t+=`Area: ${fmt(areaM2)} m²\n`;
+  t+=`Area: ${fmt(areaM2*10.7639)} ft²\n`;
+  t+=`Area: ${fmt(areaM2/25.2929)} Marla\n`;
+  t+=`Area: ${fmt(areaM2/505.857)} Kanal\n`;
+  t+=`Area: ${fmt(areaM2/4046.86)} Acre\n`;
+  t+=`Perimeter: ${fmt(perim,4)} m\n\n`;
+  t+='--- SIDE LENGTHS ---\n';
+  sides.forEach(s=>{t+=`P${s.from}→P${s.to}: ${fmt(s.dist,4)} m\n`;});
+  t+='\n--- INTERIOR ANGLES ---\n';
+  angles.forEach(a=>{t+=`P${a.id}: ${fmt(a.angle,4)}° (${a.convex?'Convex':'Reflex'})\n`;});
+  navigator.clipboard.writeText(t).then(()=>alert('Copied!'));
+}
+
+/* ─────── WHATSAPP ─────── */
+function shareWhatsApp(){
+  if(!lastResults) return;
+  const{pts,areaM2,sides,perim}=lastResults;
+  let m=`📐 *Area by Coordinate*\n`;
+  m+=`Area: *${fmt(areaM2)} m²*\n`;
+  m+=`Marla: ${fmt(areaM2/25.2929)}\n`;
+  m+=`Kanal: ${fmt(areaM2/505.857)}\n`;
+  m+=`Acre: ${fmt(areaM2/4046.86)}\n`;
+  m+=`Perimeter: ${fmt(perim,4)} m\n`;
+  m+=`Points: ${pts.length}\n\n`;
+  m+=`_Akhtar Engineering Hub_`;
+  window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');
+}
+
+/* ─────── CLEAR ─────── */
+function clearAll(){
+  document.getElementById('coordInput').value='';
+  document.getElementById('errorBox').style.display='none';
+  document.getElementById('actionPanel').style.display='none';
+  ['resultsArea','sidesArea','anglesArea'].forEach(id=>{
+    document.getElementById(id).innerHTML='<div class="empty-state"><div class="empty-icon">◈</div>No data yet</div>';
+  });
+  document.getElementById('pointsArea').innerHTML='<div class="empty-state"><div class="empty-icon">⊹</div>No points yet</div>';
+  lastPoints=[];lastResults=null;
+  initCanvas();
+}
+
+/* ─────── INIT CANVAS ─────── */
+function initCanvas(){
+  const cv=document.getElementById('polyCanvas');
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#040b12';ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.strokeStyle='rgba(0,212,255,0.05)';ctx.lineWidth=1;
+  for(let x=0;x<500;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,500);ctx.stroke();}
+  for(let y=0;y<500;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(500,y);ctx.stroke();}
+}
+window.onload=initCanvas;
+</script>
+</body>
+</html>
