@@ -3,318 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Area by Coordinate Pro - Akhtar Surveyor</title>
-    <link rel="manifest" href="manifest.json">
-    <!-- PDF Generate karne ki Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <title>Area by Coordinate Pro | Akhtar Surveyor</title>
+    
+    <script src="https://sdk.start.io/v1/startio.js" async></script>
+
     <style>
-        :root { --primary: #00bcd4; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --danger: #e74c3c; }
-        body { 
-            font-family: system-ui, -apple-system, sans-serif; 
-            background: var(--bg); color: var(--text); 
-            margin: 0; padding: 0; 
-            display: flex; flex-direction: column; align-items: center; 
-            min-height: 100vh; padding-bottom: 70px; 
-        }
-        .container { width: 100%; max-width: 500px; padding: 20px; box-sizing: border-box; }
-        h1 { color: var(--primary); text-align: center; font-size: 22px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        p.sub { text-align: center; color: #94a3b8; font-size: 13px; margin-top: 0; margin-bottom: 20px; }
-        
-        .points-container { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 15px; }
-        .coord-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
-        .point-label { font-size: 12px; font-weight: bold; color: var(--primary); width: 25px; text-align: center; }
-        input { 
-            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; 
-            background: #0f172a; color: #fff; font-size: 14px; font-weight: bold; box-sizing: border-box; 
-            outline: none; transition: 0.3s;
-        }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 8px rgba(0, 188, 212, 0.2); }
-        
-        .btn-remove { 
-            background: rgba(231, 76, 60, 0.1); color: var(--danger); border: 1px solid var(--danger);
-            border-radius: 8px; padding: 8px 12px; cursor: pointer; font-weight: bold; transition: 0.3s;
-        }
-        
-        .btn-add { 
-            width: 100%; padding: 12px; background: transparent; color: var(--primary); 
-            border: 2px dashed var(--primary); border-radius: 10px; font-size: 14px; font-weight: bold; 
-            cursor: pointer; margin-bottom: 15px; transition: 0.3s;
-        }
-        
-        .btn-calc { 
-            width: 100%; padding: 16px; background: var(--primary); color: #000; 
-            border: none; border-radius: 10px; font-size: 16px; font-weight: 900; cursor: pointer; 
-            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3); text-transform: uppercase; margin-bottom: 20px;
+        :root {
+            --primary: #00bcd4;
+            --dark: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
         }
 
-        /* PDF Report Section Styling */
-        #report-section {
-            background: #fff; color: #000; padding: 20px; border-radius: 8px;
-            display: none; width: 100%; box-sizing: border-box;
-        }
-        #report-section h2 { text-align: center; color: #333; margin-top: 0; font-size: 18px; border-bottom: 2px solid #00bcd4; padding-bottom: 10px;}
-        .report-header { font-size: 12px; color: #555; text-align: center; margin-bottom: 15px; font-weight: bold;}
-        canvas { width: 100%; max-width: 400px; height: auto; border: 1px solid #ccc; border-radius: 5px; margin: 10px 0; display: block; margin-left: auto; margin-right: auto;}
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; text-align: center; }
-        th, td { border: 1px solid #ddd; padding: 8px; }
-        th { background-color: #00bcd4; color: #fff; }
-        
-        .final-area { font-size: 20px; font-weight: bold; color: #00bcd4; text-align: center; margin-top: 15px; padding: 10px; background: #f0fdfa; border: 1px solid #00bcd4; border-radius: 5px;}
-
-        .btn-pdf { 
-            width: 100%; padding: 14px; background: #e74c3c; color: #fff; 
-            border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; 
-            margin-top: 15px; display: none; text-transform: uppercase;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            -webkit-user-select: none;
+            touch-action: manipulation;
         }
 
-        /* AdMob Safe Zone */
-        .admob-banner-area { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; 
-            background: #1e293b; border-top: 1px solid #334155; display: flex; 
-            justify-content: center; align-items: center; z-index: 1000; 
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        .admob-text { color: #475569; font-size: 10px; text-transform: uppercase; font-weight: bold;}
+
+        h2 { color: var(--primary); text-align: center; margin-bottom: 25px; }
+
+        .input-group { margin-bottom: 15px; }
+
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #94a3b8; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-calc { background: var(--primary); color: var(--dark); }
+        .btn-reset { background: #ef4444; color: white; }
+
+        #result {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0, 188, 212, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 4px;
+            display: none;
+        }
+
+        /* Ads Container Style */
+        #startio-banner {
+            width: 100%;
+            min-height: 50px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        footer { margin-top: 30px; text-align: center; font-size: 12px; color: #64748b; }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>Coordinate Area</h1>
-        <p class="sub">Advanced Plotting & Reporting Tool</p>
-
-        <!-- Inputs Section -->
-        <div id="input-section">
-            <button class="btn-add" onclick="addPoint()">+ Add New Point</button>
-            <div class="points-container" id="pointList">
-                <div class="coord-row">
-                    <span class="point-label">P1</span>
-                    <input type="number" class="x-coord" placeholder="Easting (X)">
-                    <input type="number" class="y-coord" placeholder="Northing (Y)">
-                    <button class="btn-remove" onclick="removePoint(this)">X</button>
-                </div>
-                <div class="coord-row">
-                    <span class="point-label">P2</span>
-                    <input type="number" class="x-coord" placeholder="Easting (X)">
-                    <input type="number" class="y-coord" placeholder="Northing (Y)">
-                    <button class="btn-remove" onclick="removePoint(this)">X</button>
-                </div>
-                <div class="coord-row">
-                    <span class="point-label">P3</span>
-                    <input type="number" class="x-coord" placeholder="Easting (X)">
-                    <input type="number" class="y-coord" placeholder="Northing (Y)">
-                    <button class="btn-remove" onclick="removePoint(this)">X</button>
-                </div>
+        <h2>Area by Coordinate</h2>
+        
+        <div id="coordinate-inputs">
+            <div class="input-group">
+                <label>Point 1 (Easting, Northing)</label>
+                <input type="text" placeholder="e.g. 500.25, 1000.50" class="coord-input">
             </div>
-            <button class="btn-calc" onclick="calculateAndDraw()">Generate Results & Drawing</button>
-        </div>
-
-        <!-- Hidden Report Section (Shows after calculation) -->
-        <div id="report-section">
-            <h2>SURVEY REPORT</h2>
-            <div class="report-header">
-                Project: Area Calculation<br>
-                Prepared by: Akhtar Surveyor<br>
-                Date: <span id="dateStr"></span>
-            </div>
-            
-            <canvas id="polyCanvas" width="400" height="300"></canvas>
-            
-            <table id="dataTable">
-                <thead>
-                    <tr>
-                        <th>Line</th>
-                        <th>Length (m)</th>
-                        <th>Bearing (Angle)</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-
-            <div class="final-area">
-                Total Area: <span id="finalAreaText">0.000</span> m²
+            <div class="input-group">
+                <label>Point 2 (Easting, Northing)</label>
+                <input type="text" placeholder="e.g. 550.00, 1050.75" class="coord-input">
             </div>
         </div>
 
-        <button class="btn-pdf" id="pdfBtn" onclick="downloadPDF()">Download PDF Report</button>
+        <div class="btn-group">
+            <button class="btn-calc" onclick="processCalculation()">Calculate Area</button>
+            <button class="btn-reset" onclick="location.reload()">Reset</button>
+        </div>
+
+        <div id="result"></div>
+
+        <div id="startio-banner"></div>
     </div>
 
-    <!-- AdMob Banner Safe Zone -->
-    <div class="admob-banner-area">
-        <span class="admob-text">AdMob Banner Space Reserved</span>
-    </div>
+    <footer>
+        Developed by Akhtar Surveyor <br>
+        Shibh Al Jazira Contracting Company
+    </footer>
 
     <script>
-        let pointCount = 3;
-
-        function addPoint() {
-            pointCount++;
-            const list = document.getElementById('pointList');
-            const row = document.createElement('div');
-            row.className = 'coord-row';
-            row.innerHTML = `
-                <span class="point-label">P${pointCount}</span>
-                <input type="number" class="x-coord" placeholder="Easting (X)">
-                <input type="number" class="y-coord" placeholder="Northing (Y)">
-                <button class="btn-remove" onclick="removePoint(this)">X</button>
-            `;
-            list.appendChild(row);
-            updateLabels();
+        // Start.io Initialization with your ID
+        window.startio = window.startio || [];
+        
+        function initAds() {
+            window.startio.push({
+                type: 'banner',
+                container: 'startio-banner',
+                appId: '204621622'
+            });
         }
 
-        function removePoint(btn) {
-            const list = document.getElementById('pointList');
-            if(list.children.length <= 3) {
-                alert("Minimum 3 points required!");
+        window.onload = initAds;
+
+        function processCalculation() {
+            // Full screen (Interstitial) ad on button click
+            if (window.startio) {
+                window.startio.push({
+                    type: 'interstitial',
+                    appId: '204621622'
+                });
+            }
+
+            const inputs = document.querySelectorAll('.coord-input');
+            let coords = [];
+            
+            inputs.forEach(input => {
+                const val = input.value.split(',');
+                if(val.length === 2) {
+                    coords.push({x: parseFloat(val[0]), y: parseFloat(val[1])});
+                }
+            });
+
+            if(coords.length < 3) {
+                alert("Please enter at least 3 points for area calculation.");
                 return;
             }
-            btn.parentElement.remove();
-            updateLabels();
-        }
 
-        function updateLabels() {
-            const rows = document.querySelectorAll('.coord-row');
-            rows.forEach((row, index) => {
-                row.querySelector('.point-label').innerText = 'P' + (index + 1);
-            });
-            pointCount = rows.length;
-        }
-
-        function calculateAndDraw() {
-            const xInputs = document.querySelectorAll('.x-coord');
-            const yInputs = document.querySelectorAll('.y-coord');
-            let x = [], y = [];
-
-            for(let i = 0; i < xInputs.length; i++) {
-                let xv = parseFloat(xInputs[i].value);
-                let yv = parseFloat(yInputs[i].value);
-                if(isNaN(xv) || isNaN(yv)) {
-                    alert("Please fill all Easting and Northing values!");
-                    return;
-                }
-                x.push(xv);
-                y.push(yv);
-            }
-
-            // 1. Calculate Area (Shoelace Formula)
+            // Surveyors Formula (Shoelace Algorithm)
             let area = 0;
-            let j = x.length - 1;
-            for (let i = 0; i < x.length; i++) {
-                area += (x[j] + x[i]) * (y[j] - y[i]);
-                j = i;
+            for (let i = 0; i < coords.length; i++) {
+                let j = (i + 1) % coords.length;
+                area += coords[i].x * coords[j].y;
+                area -= coords[j].x * coords[i].y;
             }
-            area = Math.abs(area / 2.0);
-            document.getElementById('finalAreaText').innerText = area.toFixed(3);
+            area = Math.abs(area) / 2;
 
-            // 2. Calculate Distances, Bearings and Populate Table
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            for(let i = 0; i < x.length; i++) {
-                let next = (i + 1) % x.length;
-                let dx = x[next] - x[i];
-                let dy = y[next] - y[i];
-                
-                // Length
-                let length = Math.sqrt(dx*dx + dy*dy).toFixed(3);
-                
-                // Surveying Bearing (Angle from North)
-                let bearingRad = Math.atan2(dx, dy);
-                let bearingDeg = bearingRad * (180 / Math.PI);
-                if(bearingDeg < 0) bearingDeg += 360;
-                let deg = Math.floor(bearingDeg);
-                let min = Math.floor((bearingDeg - deg) * 60);
-                let sec = (((bearingDeg - deg) * 60 - min) * 60).toFixed(0);
-                
-                let lineName = `P${i+1} - P${next+1}`;
-                tbody.innerHTML += `<tr><td>${lineName}</td><td>${length}</td><td>${deg}° ${min}' ${sec}"</td></tr>`;
-            }
-
-            // 3. Draw Polygon on Canvas
-            drawPolygon(x, y);
-
-            // 4. Set Date & Show Report Section
-            let today = new Date();
-            document.getElementById('dateStr').innerText = today.toLocaleDateString();
-            document.getElementById('report-section').style.display = 'block';
-            document.getElementById('pdfBtn').style.display = 'block';
-        }
-
-        function drawPolygon(x, y) {
-            const canvas = document.getElementById('polyCanvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Find bounds
-            let minX = Math.min(...x), maxX = Math.max(...x);
-            let minY = Math.min(...y), maxY = Math.max(...y);
-
-            // Set padding and scaling to fit screen
-            let padding = 40;
-            let scaleX = (canvas.width - padding*2) / (maxX - minX || 1);
-            let scaleY = (canvas.height - padding*2) / (maxY - minY || 1);
-            let scale = Math.min(scaleX, scaleY);
-
-            // Convert Survey Coordinates to Canvas Pixels (Y is inverted)
-            function tx(val) { return padding + (val - minX) * scale; }
-            function ty(val) { return canvas.height - padding - (val - minY) * scale; }
-
-            // Draw Shape
-            ctx.beginPath();
-            ctx.moveTo(tx(x[0]), ty(y[0]));
-            for(let i=1; i<x.length; i++) {
-                ctx.lineTo(tx(x[i]), ty(y[i]));
-            }
-            ctx.closePath();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = '#00bcd4';
-            ctx.stroke();
-            ctx.fillStyle = 'rgba(0, 188, 212, 0.1)';
-            ctx.fill();
-
-            // Draw Points & Texts
-            ctx.fillStyle = '#333';
-            ctx.font = '12px Arial';
-            ctx.textAlign = 'center';
-            for(let i = 0; i < x.length; i++) {
-                let next = (i + 1) % x.length;
-                let px = tx(x[i]);
-                let py = ty(y[i]);
-                
-                // Draw Point
-                ctx.beginPath();
-                ctx.arc(px, py, 4, 0, 2*Math.PI);
-                ctx.fillStyle = '#e74c3c';
-                ctx.fill();
-
-                // Point Label
-                ctx.fillStyle = '#000';
-                ctx.fillText(`P${i+1}`, px, py - 10);
-
-                // Draw Length on Line Midpoint
-                let midX = (px + tx(x[next])) / 2;
-                let midY = (py + ty(y[next])) / 2;
-                let length = Math.sqrt(Math.pow(x[next]-x[i], 2) + Math.pow(y[next]-y[i], 2)).toFixed(2);
-                
-                ctx.fillStyle = '#00bcd4';
-                ctx.font = 'bold 11px Arial';
-                ctx.fillText(length + 'm', midX, midY - 5);
-            }
-        }
-
-        function downloadPDF() {
-            const element = document.getElementById('report-section');
-            const opt = {
-                margin:       10,
-                filename:     'Survey_Area_Report.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            // Generate and save PDF
-            html2pdf().set(opt).from(element).save();
-        }
-
-        if ('serviceWorker' in navigator) { 
-            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
+            const resDiv = document.getElementById('result');
+            resDiv.style.display = 'block';
+            resDiv.innerHTML = `
+                <strong>Result:</strong><br>
+                Total Area: ${area.toFixed(3)} Sq.m<br>
+                Total Area: ${(area / 10000).toFixed(4)} Hectares
+            `;
         }
     </script>
 </body>
