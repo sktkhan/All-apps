@@ -3,183 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Area by Coordinate Pro | Akhtar Surveyor</title>
+    <title>Area by Coordinate Pro - Akhtar Surveyor</title>
     
     <script src="https://sdk.start.io/v1/startio.js" async></script>
 
     <style>
-        :root {
-            --primary: #00bcd4;
-            --dark: #0f172a;
-            --card: #1e293b;
-            --text: #f8fafc;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--dark);
-            color: var(--text);
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            -webkit-user-select: none;
-            touch-action: manipulation;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        h2 { color: var(--primary); text-align: center; margin-bottom: 25px; }
-
-        .input-group { margin-bottom: 15px; }
-
-        label { display: block; margin-bottom: 5px; font-size: 14px; color: #94a3b8; }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            color: white;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-calc { background: var(--primary); color: var(--dark); }
-        .btn-reset { background: #ef4444; color: white; }
-
-        #result {
-            margin-top: 25px;
             padding: 15px;
-            background: rgba(0, 188, 212, 0.1);
-            border-left: 4px solid var(--primary);
+            text-align: center;
+        }
+        .header {
+            background-color: #008cba;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th { background-color: #eee; }
+        input {
+            width: 90%;
+            padding: 8px;
+            border: 1px solid #ccc;
             border-radius: 4px;
+            font-size: 14px;
+        }
+        .btn {
+            padding: 12px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-add { background-color: #4CAF50; color: white; }
+        .btn-calc { background-color: #008cba; color: white; }
+        .btn-reset { background-color: #f44336; color: white; }
+        
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border: 2px solid #008cba;
+            border-radius: 8px;
             display: none;
+            text-align: left;
         }
 
-        /* Ads Container Style */
+        /* Ad Placement */
         #startio-banner {
             width: 100%;
-            min-height: 50px;
             margin: 20px 0;
             display: flex;
             justify-content: center;
         }
-
-        footer { margin-top: 30px; text-align: center; font-size: 12px; color: #64748b; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Area by Coordinate</h2>
-        
-        <div id="coordinate-inputs">
-            <div class="input-group">
-                <label>Point 1 (Easting, Northing)</label>
-                <input type="text" placeholder="e.g. 500.25, 1000.50" class="coord-input">
-            </div>
-            <div class="input-group">
-                <label>Point 2 (Easting, Northing)</label>
-                <input type="text" placeholder="e.g. 550.00, 1050.75" class="coord-input">
-            </div>
-        </div>
+<div class="header">
+    <h2 style="margin:0;">Area by Coordinate</h2>
+    <small>SHIBH AL JAZIRA CONTRACTING COMPANY</small>
+</div>
 
-        <div class="btn-group">
-            <button class="btn-calc" onclick="processCalculation()">Calculate Area</button>
-            <button class="btn-reset" onclick="location.reload()">Reset</button>
-        </div>
+<table id="coordTable">
+    <thead>
+        <tr>
+            <th>Pt.</th>
+            <th>Easting (X)</th>
+            <th>Northing (Y)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td><input type="number" step="any" class="east"></td>
+            <td><input type="number" step="any" class="north"></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><input type="number" step="any" class="east"></td>
+            <td><input type="number" step="any" class="north"></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><input type="number" step="any" class="east"></td>
+            <td><input type="number" step="any" class="north"></td>
+        </tr>
+    </tbody>
+</table>
 
-        <div id="result"></div>
+<button class="btn btn-add" onclick="addRow()">+ Add Point</button>
+<button class="btn btn-calc" onclick="calculateArea()">Calculate Area</button>
+<button class="btn btn-reset" onclick="location.reload()">Reset</button>
 
-        <div id="startio-banner"></div>
-    </div>
+<div id="result"></div>
 
-    <footer>
-        Developed by Akhtar Surveyor <br>
-        Shibh Al Jazira Contracting Company
-    </footer>
+<div id="startio-banner"></div>
 
-    <script>
-        // Start.io Initialization with your ID
-        window.startio = window.startio || [];
-        
-        function initAds() {
+<footer>
+    <p style="color:#888; font-size:12px;">Developed by: Akhtar Surveyor</p>
+</footer>
+
+<script>
+    // Start.io ID: 204621622
+    window.startio = window.startio || [];
+
+    // Auto-load Banner
+    window.onload = function() {
+        window.startio.push({
+            type: 'banner',
+            container: 'startio-banner',
+            appId: '204621622'
+        });
+    };
+
+    function addRow() {
+        var table = document.getElementById("coordTable").getElementsByTagName('tbody')[0];
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
+        row.innerHTML = `<td>${rowCount + 1}</td>
+                         <td><input type="number" step="any" class="east"></td>
+                         <td><input type="number" step="any" class="north"></td>`;
+    }
+
+    function calculateArea() {
+        // Trigger Full Screen Ad
+        if (window.startio) {
             window.startio.push({
-                type: 'banner',
-                container: 'startio-banner',
+                type: 'interstitial',
                 appId: '204621622'
             });
         }
 
-        window.onload = initAds;
+        var easts = document.getElementsByClassName("east");
+        var norths = document.getElementsByClassName("north");
+        var n = easts.length;
+        var area = 0;
+        var x = [], y = [];
 
-        function processCalculation() {
-            // Full screen (Interstitial) ad on button click
-            if (window.startio) {
-                window.startio.push({
-                    type: 'interstitial',
-                    appId: '204621622'
-                });
+        for (var i = 0; i < n; i++) {
+            if (easts[i].value !== "" && norths[i].value !== "") {
+                x.push(parseFloat(easts[i].value));
+                y.push(parseFloat(norths[i].value));
             }
-
-            const inputs = document.querySelectorAll('.coord-input');
-            let coords = [];
-            
-            inputs.forEach(input => {
-                const val = input.value.split(',');
-                if(val.length === 2) {
-                    coords.push({x: parseFloat(val[0]), y: parseFloat(val[1])});
-                }
-            });
-
-            if(coords.length < 3) {
-                alert("Please enter at least 3 points for area calculation.");
-                return;
-            }
-
-            // Surveyors Formula (Shoelace Algorithm)
-            let area = 0;
-            for (let i = 0; i < coords.length; i++) {
-                let j = (i + 1) % coords.length;
-                area += coords[i].x * coords[j].y;
-                area -= coords[j].x * coords[i].y;
-            }
-            area = Math.abs(area) / 2;
-
-            const resDiv = document.getElementById('result');
-            resDiv.style.display = 'block';
-            resDiv.innerHTML = `
-                <strong>Result:</strong><br>
-                Total Area: ${area.toFixed(3)} Sq.m<br>
-                Total Area: ${(area / 10000).toFixed(4)} Hectares
-            `;
         }
-    </script>
+
+        if (x.length < 3) {
+            alert("Minimum 3 coordinates zaroori hain!");
+            return;
+        }
+
+        // Shoelace Formula
+        var j = x.length - 1;
+        for (var i = 0; i < x.length; i++) {
+            area += (x[j] + x[i]) * (y[j] - y[i]);
+            j = i;
+        }
+        area = Math.abs(area / 2.0);
+
+        var resDiv = document.getElementById("result");
+        resDiv.style.display = "block";
+        resDiv.innerHTML = `
+            <strong>Calculation Results:</strong><br><br>
+            Total Area: <b>${area.toFixed(3)}</b> Sq. Meters<br>
+            Total Area: <b>${(area / 10000).toFixed(4)}</b> Hectares<br>
+            Total Area: <b>${(area * 10.7639).toFixed(2)}</b> Sq. Feet
+        `;
+    }
+</script>
+
 </body>
 </html>
