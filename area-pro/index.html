@@ -3,186 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Area by Coordinate Pro - Akhtar Surveyor</title>
+    <title>Area Coordinate Pro | Akhtar Surveyor</title>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://sdk.start.io/v1/startio.js" async></script>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 15px;
-            text-align: center;
-        }
-        .header {
-            background-color: #008cba;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            margin-bottom: 15px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th { background-color: #eee; }
-        input {
-            width: 90%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .btn {
-            padding: 12px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-add { background-color: #4CAF50; color: white; }
-        .btn-calc { background-color: #008cba; color: white; }
-        .btn-reset { background-color: #f44336; color: white; }
-        
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            background: white;
-            border: 2px solid #008cba;
-            border-radius: 8px;
-            display: none;
-            text-align: left;
-        }
-
-        /* Ad Placement */
-        #startio-banner {
-            width: 100%;
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-        }
+        :root { --primary: #00bcd4; --dark: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--dark); color: var(--text); margin: 0; padding: 10px; }
+        .header { background: linear-gradient(135deg, #008cba, #00bcd4); padding: 15px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .container { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { border: 1px solid #334155; padding: 8px; text-align: center; }
+        th { background: #334155; color: var(--primary); }
+        input { width: 90%; background: #0f172a; border: 1px solid #475569; color: white; padding: 5px; border-radius: 4px; text-align: center; }
+        .btn-box { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 15px 0; }
+        button { padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; }
+        .btn-add { background: #10b981; color: white; }
+        .btn-calc { background: var(--primary); color: var(--dark); }
+        .btn-pdf { background: #f59e0b; color: white; }
+        .btn-share { background: #6366f1; color: white; }
+        #canvasContainer { background: white; border-radius: 8px; margin-top: 15px; overflow: hidden; display: none; border: 2px solid var(--primary); }
+        #areaCanvas { width: 100%; height: auto; }
+        #resultOutput { background: rgba(0,188,212,0.1); padding: 15px; border-radius: 8px; margin-top: 15px; display: none; border-left: 5px solid var(--primary); }
+        #startio-banner { width: 100%; margin: 20px 0; display: flex; justify-content: center; min-height: 50px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h2 style="margin:0;">Area by Coordinate</h2>
-    <small>SHIBH AL JAZIRA CONTRACTING COMPANY</small>
+    <h2 style="margin:0; font-size: 20px;">Area Coordinate Pro</h2>
+    <small>Professional Surveying Tool | Akhtar Surveyor</small>
 </div>
 
-<table id="coordTable">
-    <thead>
-        <tr>
-            <th>Pt.</th>
-            <th>Easting (X)</th>
-            <th>Northing (Y)</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>1</td>
-            <td><input type="number" step="any" class="east"></td>
-            <td><input type="number" step="any" class="north"></td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td><input type="number" step="any" class="east"></td>
-            <td><input type="number" step="any" class="north"></td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td><input type="number" step="any" class="east"></td>
-            <td><input type="number" step="any" class="north"></td>
-        </tr>
-    </tbody>
-</table>
+<div class="container">
+    <table id="coordTable">
+        <thead>
+            <tr>
+                <th>Pt.</th>
+                <th>Easting (X)</th>
+                <th>Northing (Y)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td><input type="number" step="any" class="east"></td><td><input type="number" step="any" class="north"></td></tr>
+            <tr><td>2</td><td><input type="number" step="any" class="east"></td><td><input type="number" step="any" class="north"></td></tr>
+            <tr><td>3</td><td><input type="number" step="any" class="east"></td><td><input type="number" step="any" class="north"></td></tr>
+        </tbody>
+    </table>
 
-<button class="btn btn-add" onclick="addRow()">+ Add Point</button>
-<button class="btn btn-calc" onclick="calculateArea()">Calculate Area</button>
-<button class="btn btn-reset" onclick="location.reload()">Reset</button>
+    <div class="btn-box">
+        <button class="btn-add" onclick="addRow()">+ Add Point</button>
+        <button class="btn-calc" onclick="calculateAll()">Calculate & Draw</button>
+        <button class="btn-pdf" onclick="generatePDF()">Download PDF</button>
+        <button class="btn-share" onclick="shareReport()">Share Report</button>
+    </div>
 
-<div id="result"></div>
+    <div id="resultOutput"></div>
 
-<div id="startio-banner"></div>
+    <div id="canvasContainer">
+        <canvas id="areaCanvas"></canvas>
+    </div>
 
-<footer>
-    <p style="color:#888; font-size:12px;">Developed by: Akhtar Surveyor</p>
+    <div id="startio-banner"></div>
+</div>
+
+<footer style="text-align: center; font-size: 11px; color: #64748b;">
+    SHIBH AL JAZIRA CONTRACTING COMPANY <br> © 2026 Akhtar Surveyor
 </footer>
 
 <script>
-    // Start.io ID: 204621622
+    // Start.io Integration
     window.startio = window.startio || [];
-
-    // Auto-load Banner
     window.onload = function() {
-        window.startio.push({
-            type: 'banner',
-            container: 'startio-banner',
-            appId: '204621622'
-        });
+        window.startio.push({ type: 'banner', container: 'startio-banner', appId: '204621622' });
     };
 
     function addRow() {
-        var table = document.getElementById("coordTable").getElementsByTagName('tbody')[0];
-        var rowCount = table.rows.length;
-        var row = table.insertRow(rowCount);
-        row.innerHTML = `<td>${rowCount + 1}</td>
-                         <td><input type="number" step="any" class="east"></td>
-                         <td><input type="number" step="any" class="north"></td>`;
+        let table = document.getElementById("coordTable").tBodies[0];
+        let nr = table.rows.length + 1;
+        let row = table.insertRow();
+        row.innerHTML = `<td>${nr}</td><td><input type="number" step="any" class="east"></td><td><input type="number" step="any" class="north"></td>`;
     }
 
-    function calculateArea() {
-        // Trigger Full Screen Ad
-        if (window.startio) {
-            window.startio.push({
-                type: 'interstitial',
-                appId: '204621622'
-            });
-        }
+    let finalData = { area: 0, points: [], segments: [] };
 
-        var easts = document.getElementsByClassName("east");
-        var norths = document.getElementsByClassName("north");
-        var n = easts.length;
-        var area = 0;
-        var x = [], y = [];
+    function calculateAll() {
+        // Show Interstitial Ad
+        if (window.startio) window.startio.push({ type: 'interstitial', appId: '204621622' });
 
-        for (var i = 0; i < n; i++) {
-            if (easts[i].value !== "" && norths[i].value !== "") {
-                x.push(parseFloat(easts[i].value));
-                y.push(parseFloat(norths[i].value));
+        let eInputs = document.getElementsByClassName("east");
+        let nInputs = document.getElementsByClassName("north");
+        let pts = [];
+        
+        for (let i = 0; i < eInputs.length; i++) {
+            if (eInputs[i].value !== "" && nInputs[i].value !== "") {
+                pts.push({ x: parseFloat(eInputs[i].value), y: parseFloat(nInputs[i].value) });
             }
         }
 
-        if (x.length < 3) {
-            alert("Minimum 3 coordinates zaroori hain!");
-            return;
-        }
+        if (pts.length < 3) { alert("Please enter at least 3 points!"); return; }
 
-        // Shoelace Formula
-        var j = x.length - 1;
-        for (var i = 0; i < x.length; i++) {
-            area += (x[j] + x[i]) * (y[j] - y[i]);
-            j = i;
+        // Area Calculation (Shoelace)
+        let area = 0;
+        let segs = [];
+        for (let i = 0; i < pts.length; i++) {
+            let next = (i + 1) % pts.length;
+            area += (pts[i].x * pts[next].y) - (pts[next].x * pts[i].y);
+            
+            // Distance & Bearing
+            let dx = pts[next].x - pts[i].x;
+            let dy = pts[next].y - pts[i].y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            let angle = (Math.atan2(dx, dy) * 180 / Math.PI + 360) % 360;
+            segs.push({ from: i+1, to: next+1, dist: dist.toFixed(3), angle: angle.toFixed(2) });
         }
-        area = Math.abs(area / 2.0);
+        finalData.area = Math.abs(area / 2);
+        finalData.points = pts;
+        finalData.segments = segs;
 
-        var resDiv = document.getElementById("result");
-        resDiv.style.display = "block";
-        resDiv.innerHTML = `
-            <strong>Calculation Results:</strong><br><br>
-            Total Area: <b>${area.toFixed(3)}</b> Sq. Meters<br>
-            Total Area: <b>${(area / 10000).toFixed(4)}</b> Hectares<br>
-            Total Area: <b>${(area * 10.7639).toFixed(2)}</b> Sq. Feet
-        `;
+        displayResults();
+        drawCanvas();
+    }
+
+    function displayResults() {
+        let res = document.getElementById("resultOutput");
+        res.style.display = "block";
+        res.innerHTML = `<strong>Final Area:</strong> ${finalData.area.toFixed(3)} Sq.m <br>
+                         <strong>Hectares:</strong> ${(finalData.area/10000).toFixed(4)} <br>
+                         <strong>Perimeter:</strong> ${finalData.segments.reduce((a,b) => a + parseFloat(b.dist), 0).toFixed(3)} m`;
+    }
+
+    function drawCanvas() {
+        document.getElementById("canvasContainer").style.display = "block";
+        const canvas = document.getElementById("areaCanvas");
+        const ctx = canvas.getContext("2d");
+        const pts = finalData.points;
+        
+        canvas.width = 800; canvas.height = 600;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Scaling logic
+        let minX = Math.min(...pts.map(p => p.x)), maxX = Math.max(...pts.map(p => p.x));
+        let minY = Math.min(...pts.map(p => p.y)), maxY = Math.max(...pts.map(p => p.y));
+        let scale = Math.min(700 / (maxX - minX), 500 / (maxY - minY));
+        
+        ctx.beginPath();
+        ctx.strokeStyle = "#00bcd4"; ctx.lineWidth = 3; ctx.setLineDash([]);
+        
+        pts.forEach((p, i) => {
+            let px = (p.x - minX) * scale + 50;
+            let py = canvas.height - ((p.y - minY) * scale + 50);
+            if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+            
+            // Labels
+            ctx.fillStyle = "black"; ctx.font = "bold 14px Arial";
+            ctx.fillText("P"+(i+1), px + 5, py - 5);
+        });
+        ctx.closePath(); ctx.stroke();
+    }
+
+    async function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFontSize(18); doc.text("Survey Report - Akhtar Surveyor", 14, 20);
+        doc.setFontSize(12); doc.text("Project: Area by Coordinate Calculation", 14, 30);
+        
+        doc.autoTable({
+            startY: 40,
+            head: [['From', 'To', 'Distance (m)', 'Bearing (°)']],
+            body: finalData.segments.map(s => [s.from, s.to, s.dist, s.angle])
+        });
+
+        doc.text(`Total Area: ${finalData.area.toFixed(3)} Sq.m`, 14, doc.lastAutoTable.finalY + 10);
+        
+        // Add Drawing
+        let canvas = document.getElementById("areaCanvas");
+        let imgData = canvas.toDataURL("image/png");
+        doc.addImage(imgData, 'PNG', 14, doc.lastAutoTable.finalY + 20, 180, 120);
+        
+        doc.save("Survey_Report_Akhtar.pdf");
+    }
+
+    function shareReport() {
+        if (navigator.share) {
+            navigator.share({ title: 'Survey Report', text: `Area Result: ${finalData.area.toFixed(3)} Sq.m`, url: window.location.href });
+        } else {
+            alert("Sharing not supported on this browser. Copy the results manually.");
+        }
     }
 </script>
 
