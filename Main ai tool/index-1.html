@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Akhtar Engineering Hub — AI Tools Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ===== NOISE OVERLAY ===== -->
+<div class="noise-overlay"></div>
+
+<!-- ===== SIDEBAR NAV ===== -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-icon">⬡</span>
+    <span class="logo-text">AEH</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#home"     class="nav-link active" data-section="home">    <span class="nav-icon">◈</span> Home</a></li>
+    <li><a href="#text"     class="nav-link"        data-section="text">    <span class="nav-icon">✦</span> Text AI</a></li>
+    <li><a href="#image"    class="nav-link"        data-section="image">   <span class="nav-icon">◉</span> Image AI</a></li>
+    <li><a href="#video"    class="nav-link"        data-section="video">   <span class="nav-icon">▶</span> Video AI</a></li>
+    <li><a href="#prompts"  class="nav-link"        data-section="prompts"> <span class="nav-icon">◎</span> Prompts</a></li>
+    <li><a href="#tools"    class="nav-link"        data-section="tools">   <span class="nav-icon">⚙</span> Tools</a></li>
+  </ul>
+  <div class="sidebar-footer">
+    <span class="version-tag">v1.0.0 — Beta</span>
+  </div>
+</nav>
+
+<!-- ===== MOBILE TOP BAR ===== -->
+<header class="mobile-header">
+  <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="mobile-logo">⬡ AEH</span>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content" id="main">
+
+  <!-- ══════════════════════ HOME ══════════════════════ -->
+  <section class="page active" id="home">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="hero-badge">✦ AI-POWERED PLATFORM</div>
+        <h1 class="hero-title">
+          Akhtar<br/>
+          <span class="accent-stroke">Engineering</span><br/>
+          Hub
+        </h1>
+        <p class="hero-sub">
+          One platform. Six powerful AI tools.<br/>
+          Built for engineers, students &amp; creators.
+        </p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="goTo('text')">Start Creating →</button>
+          <button class="btn-ghost" onclick="goTo('prompts')">Browse Prompts</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="terminal-card">
+          <div class="terminal-bar">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="terminal-title">aeh@tools ~ </span>
+          </div>
+          <div class="terminal-body" id="terminal-body">
+            <span class="t-line">$ aeh --status</span>
+            <span class="t-line success">✓ Text AI: Online</span>
+            <span class="t-line success">✓ Image AI: Online</span>
+            <span class="t-line success">✓ Video AI: Online</span>
+            <span class="t-line success">✓ Tools: Online</span>
+            <span class="t-line blink-cursor">_</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card"><span class="stat-num">6</span><span class="stat-label">AI Tools</span></div>
+      <div class="stat-card"><span class="stat-num">12+</span><span class="stat-label">Prompt Templates</span></div>
+      <div class="stat-card"><span class="stat-num">5</span><span class="stat-label">Utility Tools</span></div>
+      <div class="stat-card"><span class="stat-num">100%</span><span class="stat-label">Free & Open</span></div>
+    </div>
+
+    <!-- TOOL CARDS GRID -->
+    <h2 class="section-title">All Tools</h2>
+    <div class="tool-grid">
+      <div class="tool-card" onclick="goTo('text')">
+        <div class="tool-icon">✦</div>
+        <h3>Text Generator</h3>
+        <p>Generate ads, scripts, captions &amp; ideas with AI</p>
+        <span class="tool-tag">NLP</span>
+      </div>
+      <div class="tool-card" onclick="goTo('image')">
+        <div class="tool-icon">◉</div>
+        <h3>Image Generator</h3>
+        <p>Turn text prompts into stunning visuals instantly</p>
+        <span class="tool-tag">Vision</span>
+      </div>
+      <div class="tool-card" onclick="goTo('video')">
+        <div class="tool-icon">▶</div>
+        <h3>Video Generator</h3>
+        <p>Scene breakdowns → slideshow videos exported as MP4</p>
+        <span class="tool-tag">Media</span>
+      </div>
+      <div class="tool-card" onclick="goTo('prompts')">
+        <div class="tool-icon">◎</div>
+        <h3>Prompt Library</h3>
+        <p>Copy-ready prompts for ads, scripts &amp; social media</p>
+        <span class="tool-tag">Templates</span>
+      </div>
+      <div class="tool-card" onclick="goTo('tools')">
+        <div class="tool-icon">⚙</div>
+        <h3>Unit Converter</h3>
+        <p>Engineering unit conversions with precision</p>
+        <span class="tool-tag">Engineering</span>
+      </div>
+      <div class="tool-card" onclick="goTo('tools')">
+        <div class="tool-icon">≡</div>
+        <h3>Text Tools</h3>
+        <p>Word count, case convert, and more utilities</p>
+        <span class="tool-tag">Utility</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ TEXT AI ══════════════════════ -->
+  <section class="page" id="text">
+    <div class="page-header">
+      <h1>✦ Text AI Generator</h1>
+      <p>Powered by Claude AI — generate professional content instantly</p>
+    </div>
+
+    <div class="two-col">
+      <!-- INPUT PANEL -->
+      <div class="panel">
+        <label class="label">Category</label>
+        <div class="chip-group" id="text-categories">
+          <button class="chip active" data-val="Ad Copy">Ad Copy</button>
+          <button class="chip" data-val="YouTube Script">YouTube Script</button>
+          <button class="chip" data-val="Caption">Caption</button>
+          <button class="chip" data-val="Ideas">Ideas</button>
+          <button class="chip" data-val="Learning Content">Learning</button>
+        </div>
+
+        <label class="label">Your Prompt</label>
+        <textarea class="input-area" id="text-prompt" placeholder="e.g. Write a Facebook ad for a solar panel company targeting homeowners..."></textarea>
+
+        <label class="label">Tone</label>
+        <select class="select-input" id="text-tone">
+          <option value="professional">Professional</option>
+          <option value="casual">Casual / Friendly</option>
+          <option value="persuasive">Persuasive / Sales</option>
+          <option value="educational">Educational</option>
+          <option value="creative">Creative / Bold</option>
+        </select>
+
+        <label class="label">Length</label>
+        <div class="chip-group" id="text-length">
+          <button class="chip active" data-val="short">Short</button>
+          <button class="chip" data-val="medium">Medium</button>
+          <button class="chip" data-val="long">Long</button>
+        </div>
+
+        <button class="btn-primary full-width" id="generate-text-btn" onclick="generateText()">
+          Generate Text ✦
+        </button>
+      </div>
+
+      <!-- OUTPUT PANEL -->
+      <div class="panel output-panel">
+        <div class="output-header">
+          <span class="label">Output</span>
+          <div class="output-actions">
+            <button class="icon-btn" onclick="copyOutput('text-output')" title="Copy">⎘</button>
+            <button class="icon-btn" onclick="downloadOutput('text-output', 'aeh-text.txt')" title="Download">↓</button>
+          </div>
+        </div>
+        <div class="output-area" id="text-output">
+          <div class="placeholder-msg">
+            <span>✦</span>
+            <p>Your generated content will appear here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ IMAGE AI ══════════════════════ -->
+  <section class="page" id="image">
+    <div class="page-header">
+      <h1>◉ Image AI Generator</h1>
+      <p>Generate stunning visuals from text descriptions</p>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <label class="label">Image Style</label>
+        <div class="chip-group" id="img-styles">
+          <button class="chip active" data-val="photorealistic">Photorealistic</button>
+          <button class="chip" data-val="digital art">Digital Art</button>
+          <button class="chip" data-val="3D render">3D Render</button>
+          <button class="chip" data-val="oil painting">Oil Painting</button>
+          <button class="chip" data-val="minimalist">Minimalist</button>
+        </div>
+
+        <label class="label">Describe Your Image</label>
+        <textarea class="input-area" id="img-prompt" placeholder="e.g. A futuristic city skyline at night with neon lights reflecting on rain-soaked streets..."></textarea>
+
+        <label class="label">Aspect Ratio</label>
+        <div class="chip-group" id="img-ratio">
+          <button class="chip active" data-val="1:1">Square 1:1</button>
+          <button class="chip" data-val="16:9">Wide 16:9</button>
+          <button class="chip" data-val="9:16">Portrait 9:16</button>
+        </div>
+
+        <label class="label">Number of Images</label>
+        <input type="range" class="range-input" id="img-count" min="1" max="4" value="2" oninput="document.getElementById('img-count-val').textContent = this.value" />
+        <span class="range-label" id="img-count-val">2</span>
+
+        <button class="btn-primary full-width" id="generate-img-btn" onclick="generateImages()">
+          Generate Images ◉
+        </button>
+      </div>
+
+      <div class="panel">
+        <span class="label">Results</span>
+        <div class="image-grid" id="image-results">
+          <div class="placeholder-msg">
+            <span>◉</span>
+            <p>Generated images will appear here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ VIDEO AI ══════════════════════ -->
+  <section class="page" id="video">
+    <div class="page-header">
+      <h1>▶ Video AI Generator</h1>
+      <p>Generate scene breakdowns and slideshow videos from prompts</p>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <label class="label">Video Type</label>
+        <div class="chip-group" id="vid-types">
+          <button class="chip active" data-val="Product Ad">Product Ad</button>
+          <button class="chip" data-val="Tutorial">Tutorial</button>
+          <button class="chip" data-val="Explainer">Explainer</button>
+          <button class="chip" data-val="Social Reel">Social Reel</button>
+        </div>
+
+        <label class="label">Video Topic / Script Prompt</label>
+        <textarea class="input-area" id="vid-prompt" placeholder="e.g. Create a 30-second ad for an engineering software tool with energetic scenes..."></textarea>
+
+        <label class="label">Number of Scenes</label>
+        <input type="range" class="range-input" id="scene-count" min="3" max="8" value="5" oninput="document.getElementById('scene-val').textContent = this.value" />
+        <span class="range-label" id="scene-val">5</span>
+
+        <label class="label">Visual Mood</label>
+        <select class="select-input" id="vid-mood">
+          <option>High Energy / Dynamic</option>
+          <option>Professional / Corporate</option>
+          <option>Cinematic / Dramatic</option>
+          <option>Minimal / Clean</option>
+        </select>
+
+        <button class="btn-primary full-width" id="generate-vid-btn" onclick="generateVideo()">
+          Generate Scenes ▶
+        </button>
+      </div>
+
+      <div class="panel output-panel">
+        <div class="output-header">
+          <span class="label">Scene Breakdown</span>
+          <div class="output-actions">
+            <button class="icon-btn" onclick="copyOutput('vid-output')" title="Copy">⎘</button>
+            <button class="icon-btn" onclick="exportVideoScript()" title="Export Script">↓ Script</button>
+          </div>
+        </div>
+        <div class="output-area scene-output" id="vid-output">
+          <div class="placeholder-msg">
+            <span>▶</span>
+            <p>Your video scene breakdown will appear here</p>
+          </div>
+        </div>
+        <div id="video-player-wrap" style="display:none;">
+          <div class="video-preview-label">Preview Canvas (Slideshow)</div>
+          <canvas id="video-canvas" width="640" height="360"></canvas>
+          <div class="video-controls">
+            <button class="btn-ghost" id="play-btn" onclick="playSlideshow()">▶ Play Preview</button>
+            <button class="btn-primary" onclick="exportMP4()">↓ Export MP4</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════ PROMPT LIBRARY ══════════════════════ -->
+  <section class="page" id="prompts">
+    <div class="page-header">
+      <h1>◎ Prompt Library</h1>
+      <p>Copy-ready professional prompts for every use case</p>
+    </div>
+
+    <div class="prompt-filter" id="prompt-filter">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="video">Video Ads</button>
+      <button class="chip" data-filter="image">Image Gen</button>
+      <button class="chip" data-filter="youtube">YouTube</button>
+      <button class="chip" data-filter="social">Social Media</button>
+    </div>
+
+    <div class="prompt-grid" id="prompt-grid">
+      <!-- Populated by JS -->
+    </div>
+  </section>
+
+  <!-- ══════════════════════ TOOLS ══════════════════════ -->
+  <section class="page" id="tools">
+    <div class="page-header">
+      <h1>⚙ Engineering Tools</h1>
+      <p>Precision utilities for engineers and professionals</p>
+    </div>
+
+    <!-- SUB-NAV TABS -->
+    <div class="tab-bar" id="tools-tabs">
+      <button class="tab active" onclick="showTool('converter')">Unit Converter</button>
+      <button class="tab" onclick="showTool('calc')">Calc</button>
+      <button class="tab" onclick="showTool('texttools')">Text Tools</button>
+      <button class="tab" onclick="showTool('pdf')">PDF Tools</button>
+    </div>
+
+    <!-- UNIT CONVERTER -->
+    <div class="tool-section active" id="tool-converter">
+      <div class="two-col">
+        <div class="panel">
+          <label class="label">Conversion Type</label>
+          <select class="select-input" id="conv-type" onchange="updateConvUnits()">
+            <option value="length">Length</option>
+            <option value="weight">Weight / Mass</option>
+            <option value="temp">Temperature</option>
+            <option value="area">Area</option>
+            <option value="volume">Volume</option>
+            <option value="speed">Speed</option>
+            <option value="pressure">Pressure</option>
+            <option value="energy">Energy</option>
+            <option value="power">Power</option>
+          </select>
+
+          <div class="conv-row">
+            <div>
+              <label class="label">From</label>
+              <select class="select-input" id="conv-from"></select>
+            </div>
+            <div class="conv-arrow">⇌</div>
+            <div>
+              <label class="label">To</label>
+              <select class="select-input" id="conv-to"></select>
+            </div>
+          </div>
+
+          <label class="label">Value</label>
+          <input type="number" class="select-input" id="conv-value" placeholder="Enter value..." oninput="convertUnit()" />
+
+          <div class="result-display" id="conv-result">
+            <span class="result-label">Result</span>
+            <span class="result-value" id="conv-result-val">—</span>
+          </div>
+        </div>
+        <div class="panel">
+          <span class="label">Quick Reference</span>
+          <div class="ref-table" id="ref-table"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENGINEERING CALCULATOR -->
+    <div class="tool-section" id="tool-calc">
+      <div class="two-col">
+        <div class="panel">
+          <label class="label">Calculator Type</label>
+          <select class="select-input" id="calc-type" onchange="renderCalc()">
+            <option value="ohm">Ohm's Law</option>
+            <option value="power">Power (P = IV)</option>
+            <option value="area">Area Calculator</option>
+            <option value="bmi">BMI Calculator</option>
+            <option value="percent">Percentage</option>
+          </select>
+          <div id="calc-form"></div>
+          <button class="btn-primary full-width" onclick="runCalc()" style="margin-top:1rem;">Calculate</button>
+        </div>
+        <div class="panel">
+          <span class="label">Result</span>
+          <div class="result-display">
+            <span class="result-value" id="calc-result">—</span>
+          </div>
+          <div class="formula-box" id="formula-box"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEXT TOOLS -->
+    <div class="tool-section" id="tool-texttools">
+      <div class="two-col">
+        <div class="panel">
+          <label class="label">Input Text</label>
+          <textarea class="input-area" id="tt-input" placeholder="Paste or type your text here..." oninput="updateTextStats()"></textarea>
+
+          <div class="text-stats" id="text-stats">
+            <span>Words: <b id="stat-words">0</b></span>
+            <span>Chars: <b id="stat-chars">0</b></span>
+            <span>Lines: <b id="stat-lines">0</b></span>
+            <span>Sentences: <b id="stat-sents">0</b></span>
+          </div>
+
+          <label class="label" style="margin-top:1rem;">Transform</label>
+          <div class="chip-group">
+            <button class="chip" onclick="transformText('upper')">UPPERCASE</button>
+            <button class="chip" onclick="transformText('lower')">lowercase</button>
+            <button class="chip" onclick="transformText('title')">Title Case</button>
+            <button class="chip" onclick="transformText('camel')">camelCase</button>
+            <button class="chip" onclick="transformText('snake')">snake_case</button>
+            <button class="chip" onclick="transformText('trim')">Trim Spaces</button>
+            <button class="chip" onclick="transformText('reverse')">Reverse</button>
+            <button class="chip" onclick="transformText('slug')">url-slug</button>
+          </div>
+        </div>
+        <div class="panel output-panel">
+          <div class="output-header">
+            <span class="label">Output</span>
+            <button class="icon-btn" onclick="copyOutput('tt-output')">⎘ Copy</button>
+          </div>
+          <div class="output-area" id="tt-output">
+            <div class="placeholder-msg"><span>≡</span><p>Transformed text will appear here</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PDF TOOLS -->
+    <div class="tool-section" id="tool-pdf">
+      <div class="panel" style="max-width:600px">
+        <div class="pdf-info-box">
+          <span class="tool-icon">PDF</span>
+          <h3>PDF Tools</h3>
+          <p>PDF processing requires a backend server. The features below show what's available:</p>
+          <ul class="feature-list">
+            <li>✓ Merge multiple PDFs into one</li>
+            <li>✓ Split PDF by pages</li>
+            <li>✓ Compress PDF file size</li>
+            <li>✓ Extract text from PDF</li>
+            <li>✓ Add watermark to PDF</li>
+          </ul>
+          <p class="note-text">To enable PDF tools, run the Node.js backend (<code>server.js</code>) and set <code>BACKEND_URL</code> in <code>config.js</code>.</p>
+          <p class="note-text">Alternatively, use <strong>ILovePDF API</strong> (free tier) for full PDF functionality.</p>
+          <a href="https://developer.ilovepdf.com/" target="_blank" class="btn-ghost" style="display:inline-block;margin-top:1rem;">Get Free PDF API →</a>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ===== TOAST NOTIFICATION ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== LOADING OVERLAY ===== -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <span id="loading-msg">Generating...</span>
+</div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
