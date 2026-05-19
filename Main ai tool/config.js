@@ -13,7 +13,7 @@ const AEH_CONFIG = {
   // ── ANTHROPIC (Claude AI) ──────────────────────────
   // Get a free key at: https://console.anthropic.com
   // For GitHub Pages deployment, leave as "" to use demo mode
-  ANTHROPIC_API_KEY: "",
+  ANTHROPIC_API_KEY: "sk-ant-...",  // console.anthropic.com
 
   // ── UNSPLASH (Free image API) ─────────────────────
   // Get free key at: https://unsplash.com/developers
